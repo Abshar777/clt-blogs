@@ -1,5 +1,6 @@
 import React from "react";
 import { Post } from "@/types";
+import "react-quill-new/dist/quill.snow.css";
 
 interface PostModalProps {
   post: Post | null;
@@ -75,10 +76,10 @@ const PostModal: React.FC<PostModalProps> = ({ post, onClose }) => {
             </div>
 
             {/* Safe rendering of Rich Text Content from Quill */}
-            <div className="prose prose-invert prose-lg max-w-none text-zinc-300 leading-[1.8] space-y-8 font-serif">
+            <div className="ql-editor rich-content max-w-none text-zinc-300 leading-[1.8] space-y-8 font-serif">
               <div
-                className="rich-content ql-editor"
-                style={{ padding: 0 }}
+                // className=""
+                // style={{ padding: 0 }}
                 dangerouslySetInnerHTML={{ __html: post.content }}
               />
             </div>
