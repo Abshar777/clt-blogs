@@ -64,6 +64,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+          <link rel="stylesheet" href="https://unpkg.com/react-quill-new@1.0.2/dist/quill.snow.css"></link>
          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></link>
       </head>
       <body className={`font-sans antialiased`}>
