@@ -5,7 +5,7 @@ export function proxy(request: NextRequest) {
   const response = NextResponse.next();
 
   // Set CORS headers
-  response.headers.set('Access-Control-Allow-Origin', '*'); // or specify your domain
+  response.headers.set('Access-Control-Allow-Origin', 'https://clt-academy.com'); // or specify your domain
   response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
