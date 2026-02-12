@@ -2,10 +2,13 @@ import { connectDB } from "@/lib/mongodb"
 import { Blog } from "@/lib/models/Blog"
 import { type NextRequest, NextResponse } from "next/server"
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // get query data
+    const query = request.nextUrl.searchParams
+    const category = query.get("category")
     await connectDB()
-    const blogs = await Blog.find().sort({ createdAt: -1 })
+    const blogs = await Blog.find(category ? { tags: { $in: [category] } } : {}).sort({ createdAt: -1 })
     
     return NextResponse.json(blogs)
   } catch (error) {
