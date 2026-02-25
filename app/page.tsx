@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
-import { Post, User } from "@/types";
+import { AuthorProfile, Post, User } from "@/types";
 import { ADMIN_CREDENTIALS, INITIAL_POSTS } from "@/constants";
 import BlogCard from "@/components/v1/BlogCard";
 import PostModal from "@/components/v1/PostModal";
@@ -17,6 +17,7 @@ const App: React.FC = () => {
   const [loginData, setLoginData] = useState({ username: "", password: "" });
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [authors, setAuthors] = useState<AuthorProfile[]>([]);
 
   // Sync with Backend
   const fetchPosts = async () => {
@@ -50,9 +51,21 @@ const App: React.FC = () => {
     }
   };
 
+  const fetchAuthors = async () => {
+    try {
+      const response = await fetch("/api/users");
+      if (!response.ok) return;
+      const data = await response.json();
+      setAuthors(data);
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+    }
+  };
+
   useEffect(() => {
     fetchPosts();
     verifyAuth();
+    fetchAuthors();
   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -289,6 +302,8 @@ const App: React.FC = () => {
             onUpdatePost={handleUpdatePost}
             onClose={handleClosePanel}
             editingPost={editingPost}
+            authors={authors}
+            onAuthorCreated={fetchAuthors}
           />
         </AdminGuard>
       )}

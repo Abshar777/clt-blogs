@@ -107,16 +107,26 @@ const PostModal: React.FC<PostModalProps> = ({ post, onClose }) => {
 
             <div>
               <p className="text-zinc-100 font-black text-lg sm:text-xl uppercase tracking-tighter">
-                {post.author}
+                {post.authorDetails?.name || post.author}
               </p>
               <p className="text-zinc-600 text-[10px] sm:text-xs font-black uppercase tracking-widest mt-1">
-                Node Synced:{" "}
+                {post.authorDetails?.profession || "Admin"} • Node Synced:{" "}
                 {new Date(post.createdAt).toLocaleDateString("en-US", {
                   month: "long",
                   day: "numeric",
                   year: "numeric",
                 })}
               </p>
+              {post.authorDetails?.link && (
+                <a
+                  href={post.authorDetails.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block mt-3 text-xs font-black uppercase tracking-widest text-primary hover:text-white transition-colors"
+                >
+                  Profile Link
+                </a>
+              )}
             </div>
           </div>
 

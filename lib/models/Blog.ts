@@ -28,6 +28,11 @@ const blogSchema = new mongoose.Schema(
       type: String,
       default: "Admin",
     },
+    authorId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Author",
+      default: null,
+    },
     createdAt: {
       type: Date,
       default: Date.now,

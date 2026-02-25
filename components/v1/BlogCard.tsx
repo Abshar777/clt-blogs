@@ -85,9 +85,10 @@ const BlogCard: React.FC<BlogCardProps> = ({
             </div>
             <div className="">
               <p className="text-zinc-300 font-black uppercase tracking-tighter text-xs">
-                {post.author}
+                {post.authorDetails?.name || post.author}
               </p>
-              <p className="text-zinc-600 text-[10px] font-bold">
+              <p className="text-zinc-600 text-[10px] font-bold uppercase tracking-wide">
+                {post.authorDetails?.profession || "Admin"} •{" "}
                 {new Date(post.createdAt).toLocaleDateString("en-US", {
                   month: "short",
                   day: "numeric",

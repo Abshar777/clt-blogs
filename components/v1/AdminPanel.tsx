@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Post } from "@/types";
+import { AuthorProfile, Post } from "@/types";
 import {
   improveContent,
   generateTagsAndDescription,
@@ -12,6 +12,8 @@ interface AdminPanelProps {
   onUpdatePost: (id: string, post: Partial<Post>) => void;
   onClose: () => void;
   editingPost: Post | null;
+  authors: AuthorProfile[];
+  onAuthorCreated: () => Promise<void>;
 }
 
 const AdminPanel: React.FC<AdminPanelProps> = ({
@@ -19,6 +21,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
   onUpdatePost,
   onClose,
   editingPost,
+  authors,
+  onAuthorCreated,
 }) => {
   const [formData, setFormData] = useState({
     title: "",
@@ -26,6 +30,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     content: "",
     photo: "",
     tags: "",
+    authorId: "",
+  });
+  const [newAuthor, setNewAuthor] = useState({
+    name: "",
+    profession: "",
+    link: "",
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [aiStatus, setAiStatus] = useState("");
@@ -38,6 +48,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         content: editingPost.content,
         photo: editingPost.photo,
         tags: editingPost.tags.join(", "),
+        authorId: editingPost.authorId || "",
       });
     }
   }, [editingPost]);
@@ -116,6 +127,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         .map((t) => t.trim())
         .filter((t) => t !== ""),
       author: "Admin",
+      authorId: formData.authorId || null,
     };
 
     try {
@@ -128,6 +140,38 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     } catch (error) {
       console.error(error);
       alert("Database error. Operation failed.");
+    } finally {
+      setIsProcessing(false);
+      setAiStatus("");
+    }
+  };
+
+  const handleCreateAuthor = async () => {
+    if (!newAuthor.name || !newAuthor.profession || !newAuthor.link) {
+      alert("Please fill name, profession and link to create user.");
+      return;
+    }
+
+    setIsProcessing(true);
+    setAiStatus("Creating user...");
+    try {
+      const response = await fetch("/api/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newAuthor),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create user");
+      }
+
+      const createdAuthor = await response.json();
+      await onAuthorCreated();
+      setFormData((prev) => ({ ...prev, authorId: createdAuthor._id }));
+      setNewAuthor({ name: "", profession: "", link: "" });
+    } catch (error) {
+      console.error(error);
+      alert("Unable to create user.");
     } finally {
       setIsProcessing(false);
       setAiStatus("");
@@ -231,6 +275,70 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                 placeholder="Tags: Tech, Future, AI"
                 className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-3 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 500/50 transition-all text-sm"
               />
+            </div>
+
+            <div className="space-y-3">
+              <label className="text-xs font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">
+                Writer/User
+              </label>
+              <select
+                value={formData.authorId}
+                onChange={(e) =>
+                  setFormData({ ...formData, authorId: e.target.value })
+                }
+                className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-3 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 500/50 transition-all text-sm"
+              >
+                <option value="">Default Admin</option>
+                {authors.map((author) => (
+                  <option key={author._id} value={author._id}>
+                    {author.name} - {author.profession}
+                  </option>
+                ))}
+              </select>
+
+              <div className="border border-zinc-800 rounded-2xl p-4 space-y-3">
+                <p className="text-[10px] text-zinc-500 font-black uppercase tracking-[0.2em]">
+                  Add New User
+                </p>
+                <input
+                  type="text"
+                  value={newAuthor.name}
+                  onChange={(e) =>
+                    setNewAuthor((prev) => ({ ...prev, name: e.target.value }))
+                  }
+                  placeholder="Name"
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 500/50 text-sm"
+                />
+                <input
+                  type="text"
+                  value={newAuthor.profession}
+                  onChange={(e) =>
+                    setNewAuthor((prev) => ({
+                      ...prev,
+                      profession: e.target.value,
+                    }))
+                  }
+                  placeholder="Profession"
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 500/50 text-sm"
+                />
+                <input
+                  type="url"
+                  value={newAuthor.link}
+                  onChange={(e) =>
+                    setNewAuthor((prev) => ({ ...prev, link: e.target.value }))
+                  }
+                  placeholder="Profile Link (https://...)"
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 500/50 text-sm"
+                />
+                <button
+                  type="button"
+                  onClick={handleCreateAuthor}
+                  disabled={isProcessing}
+                  className="w-full px-4 py-2.5 rounded-xl border border-zinc-700 text-zinc-300 hover:text-white hover:border-zinc-500 transition-all text-xs font-black uppercase tracking-[0.2em]"
+                >
+                  Create User
+                </button>
+              </div>
             </div>
           </div>
 

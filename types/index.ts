@@ -1,4 +1,13 @@
 
+export interface AuthorProfile {
+  _id: string;
+  name: string;
+  profession: string;
+  link: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface Post {
   _id: string;
   title: string;
@@ -9,6 +18,8 @@ export interface Post {
   createdAt: string;
   updatedAt: string;
   author: string;
+  authorId?: string | null;
+  authorDetails?: AuthorProfile | null;
   __v?: number;
 }
 
