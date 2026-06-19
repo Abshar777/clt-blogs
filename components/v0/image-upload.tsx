@@ -13,9 +13,24 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
   const [preview, setPreview] = useState<string | null>(currentImage || null);
   const [error, setError] = useState("");
 
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+  const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
+
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // Validate before doing anything else.
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      setError("Unsupported file type. Use PNG, JPG or WebP.");
+      e.target.value = "";
+      return;
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      setError("File too large. Maximum size is 5MB.");
+      e.target.value = "";
+      return;
+    }
 
     // Show local preview immediately
     const reader = new FileReader();
@@ -31,24 +46,27 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
       const formData = new FormData();
       formData.append("file", file);
 
-      // Assuming backend endpoint /api/upload handles Cloudinary/Storage
       const response = await fetch("/api/upload", {
         method: "POST",
         body: formData,
       });
 
       if (!response.ok) {
-        throw new Error("Upload failed");
+        const data = await response.json().catch(() => null);
+        throw new Error(data?.error || "Upload failed");
       }
 
       const data = await response.json();
-      // data.secure_url is standard for Cloudinary responses
       onImageUpload(data.secure_url || data.url);
     } catch (err) {
       console.error(err);
-      setError("Failed to upload image. Using local preview for now.");
-      // In a real app, you might want to stop here,
-      // but for this demo we'll let the base64 preview stand if upload fails
+      // Hard-fail: clear the preview so the user isn't misled into thinking
+      // the (failed) upload succeeded, and never let an unsaved image submit.
+      setPreview(currentImage || null);
+      setError(
+        err instanceof Error ? err.message : "Failed to upload image. Please try again.",
+      );
+      e.target.value = "";
     } finally {
       setUploading(false);
     }
