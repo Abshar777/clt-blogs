@@ -192,9 +192,13 @@ const App: React.FC = () => {
               className="flex items-center space-x-4 cursor-pointer group"
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             >
-              {/* <div className="w-12 h-12 rounded-2xl bg-primary/50 600 flex items-center justify-center shadow-[0_0_40px_-5px_rgba(124,58,237,0.5)] group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                <i className="fa-solid fa-atom text-white text-2xl"></i>
-              </div> */}
+              <div className="w-12 h-12 rounded-2xl overflow-hidden bg-zinc-900 flex items-center justify-center shadow-[0_0_40px_-5px_rgba(124,58,237,0.5)] group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                <img
+                  src="/favicon.ico"
+                  alt="CLT Academy logo"
+                  className="w-full h-full object-cover"
+                />
+              </div>
               <div>
                 <span className="text-3xl font-black tracking-tighter text-zinc-100 uppercase italic leading-none block">
                   Clt Academy
