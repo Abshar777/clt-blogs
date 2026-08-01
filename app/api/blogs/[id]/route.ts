@@ -2,6 +2,7 @@ import { connectDB } from "@/lib/mongodb"
 import { Author } from "@/lib/models/Author"
 import { Blog } from "@/lib/models/Blog"
 import { serializeBlog } from "@/lib/serializers/blog"
+import { uniqueSlug } from "@/lib/slug"
 import { type NextRequest, NextResponse } from "next/server"
 
 type RouteContext = { params: Promise<{ id: string }> }
@@ -44,6 +45,14 @@ export async function PUT(request: NextRequest, context: RouteContext) {
       ...data,
       author: selectedAuthor?.name || data.author || "Admin",
       authorId: data.authorId || null,
+    }
+
+    // Only re-slug on explicit request. Changing a published post's URL
+    // silently would orphan every existing inbound link.
+    if (data.slug) {
+      payload.slug = await uniqueSlug(data.slug, id)
+    } else {
+      delete payload.slug
     }
 
     const blog = await Blog.findByIdAndUpdate(id, payload, {

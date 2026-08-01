@@ -7,6 +7,16 @@ const blogSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    // Unique at the DB level, not just in application code — the public URL
+    // depends on it and a collision makes a post unreachable.
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+      trim: true,
+      lowercase: true,
+    },
     description: {
       type: String,
       required: true,

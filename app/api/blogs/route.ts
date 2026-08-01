@@ -2,6 +2,7 @@ import { connectDB } from "@/lib/mongodb"
 import { Author } from "@/lib/models/Author"
 import { Blog } from "@/lib/models/Blog"
 import { serializeBlog } from "@/lib/serializers/blog"
+import { uniqueSlug } from "@/lib/slug"
 import { type NextRequest, NextResponse } from "next/server"
 
 export async function GET(request: NextRequest) {
@@ -38,6 +39,7 @@ export async function POST(request: NextRequest) {
 
     const blog = await Blog.create({
       ...data,
+      slug: await uniqueSlug(data.slug || data.title),
       tags: data.tags || [],
       author: selectedAuthor?.name || data.author || "Admin",
       authorId: data.authorId || null,
