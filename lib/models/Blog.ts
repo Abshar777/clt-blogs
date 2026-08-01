@@ -30,6 +30,31 @@ const blogSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    // Controlled taxonomy. Free-text tags stay for topic detail; the category
+    // is what drives the /blogs/category hubs and related-post links.
+    category: {
+      type: String,
+      enum: [
+        "forex-basics",
+        "trading-psychology",
+        "risk-management",
+        "trading-strategies",
+        "uae-markets-regulation",
+        "crypto-trading",
+        "stock-markets",
+      ],
+      default: null,
+    },
+    // Lets marketing publish an optimised page without a code deploy.
+    seo: {
+      metaTitle: { type: String, trim: true, default: "" },
+      metaDescription: { type: String, trim: true, default: "" },
+      canonicalOverride: { type: String, trim: true, default: "" },
+      ogImage: { type: String, trim: true, default: "" },
+      noindex: { type: Boolean, default: false },
+      focusKeyword: { type: String, trim: true, default: "" },
+      schemaOverride: { type: String, default: "" },
+    },
     photo: {
       type: String,
       required: true,

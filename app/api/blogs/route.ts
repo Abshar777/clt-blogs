@@ -40,6 +40,8 @@ export async function POST(request: NextRequest) {
     const blog = await Blog.create({
       ...data,
       slug: await uniqueSlug(data.slug || data.title),
+      category: data.category || null,
+      seo: data.seo || {},
       tags: data.tags || [],
       author: selectedAuthor?.name || data.author || "Admin",
       authorId: data.authorId || null,

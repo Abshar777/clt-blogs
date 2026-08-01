@@ -2,10 +2,13 @@
  * Backfills Blog.slug and builds the unique index.
  *
  * Order matters: the index cannot build while duplicate slugs exist, so every
- * document is assigned a unique slug first. Existing URLs are derived from
- * slugify(title), so the first post to claim a title keeps its live URL and
- * later collisions get -2, -3. Sorted by createdAt so "first" is the oldest
- * post, i.e. the one already indexed.
+ * document is assigned a unique slug first.
+ *
+ * Sorted createdAt DESC to match how the site resolves a slug today — the list
+ * API sorts newest-first and the lookup takes the first match. Claiming in that
+ * same order means the post currently answering a URL keeps it, and the
+ * shadowed one gets the -2 suffix. Ascending would silently repoint a live,
+ * indexed URL at different content.
  *
  * Run with --apply to write. Without it, prints the plan and exits.
  *
@@ -20,10 +23,19 @@ const APPLY = process.argv.includes("--apply")
 function loadEnv() {
   if (process.env.MONGO_URI) return process.env.MONGO_URI
   for (const f of [".env.local", ".env"]) {
+    let raw
     try {
-      const m = readFileSync(f, "utf8").match(/^MONGO_URI=(.*)$/m)
-      if (m) return m[1].trim().replace(/^["']|["']$/g, "")
-    } catch {}
+      raw = readFileSync(f, "utf8")
+    } catch {
+      continue
+    }
+    for (const line of raw.split(/\r?\n/)) {
+      const m = line.match(/^\s*MONGO_URI\s*=\s*(.*)$/)
+      if (!m) continue
+      // Strip surrounding quotes only. Do NOT treat # as a comment: it is a
+      // legal password character and stripping it corrupts the credential.
+      return m[1].trim().replace(/^(["'])([\s\S]*)\1$/, "$2")
+    }
   }
   throw new Error("MONGO_URI not found in env or .env.local/.env")
 }
@@ -37,12 +49,13 @@ const slugify = (title) =>
     .replace(/^-+|-+$/g, "")
 
 const uri = loadEnv()
-await mongoose.connect(uri)
+// authSource must match lib/mongodb.ts — credentials live in the admin db.
+await mongoose.connect(uri, { authSource: "admin" })
 const blogs = mongoose.connection.collection("blogs")
 
 const docs = await blogs
   .find({}, { projection: { title: 1, slug: 1, createdAt: 1 } })
-  .sort({ createdAt: 1 })
+  .sort({ createdAt: -1 })
   .toArray()
 
 const taken = new Set(docs.filter((d) => d.slug).map((d) => d.slug))

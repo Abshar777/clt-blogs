@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { AdminGuard } from "@/components/v0/admin-guard";
 import { RichTextEditor } from "@/components/v0/rich-text-editor";
+import { SeoFields, EMPTY_SEO, seoIsValid, type SeoValues } from "@/components/v0/seo-fields";
 import { ImageUpload } from "@/components/v0/image-upload";
 
 export default function EditBlogPage() {
@@ -20,6 +21,8 @@ export default function EditBlogPage() {
     tags: "",
     photo: "",
   });
+  const [seo, setSeo] = useState<SeoValues>(EMPTY_SEO);
+  const [category, setCategory] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -40,6 +43,8 @@ export default function EditBlogPage() {
           tags: blog.tags.join(", "),
           photo: blog.photo,
         });
+        setSeo({ ...EMPTY_SEO, ...(blog.seo || {}) });
+        setCategory(blog.category || "");
       } else {
         setError("Failed to load blog");
       }
@@ -87,6 +92,11 @@ export default function EditBlogPage() {
       setError("Please fill in all required fields");
       return;
     }
+    if (!seoIsValid(seo)) {
+      setError("The schema override is not valid JSON. Fix or clear it to save.");
+      return;
+    }
+
 
     setSaving(true);
 
@@ -104,6 +114,8 @@ export default function EditBlogPage() {
         body: JSON.stringify({
           ...formData,
           tags,
+          category: category || null,
+          seo,
         }),
       });
 
@@ -200,6 +212,15 @@ export default function EditBlogPage() {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
+
+            <SeoFields
+              seo={seo}
+              category={category}
+              fallbackTitle={formData.title}
+              fallbackDescription={formData.description}
+              onSeoChange={setSeo}
+              onCategoryChange={setCategory}
+            />
 
             {/* Content Editor */}
             <div>

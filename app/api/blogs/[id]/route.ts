@@ -49,6 +49,9 @@ export async function PUT(request: NextRequest, context: RouteContext) {
 
     // Only re-slug on explicit request. Changing a published post's URL
     // silently would orphan every existing inbound link.
+    if (data.category !== undefined) payload.category = data.category || null
+    if (data.seo) payload.seo = data.seo
+
     if (data.slug) {
       payload.slug = await uniqueSlug(data.slug, id)
     } else {

@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { AdminGuard } from "@/components/v0/admin-guard";
 import { RichTextEditor } from "@/components/v0/rich-text-editor";
 import { ImageUpload } from "@/components/v0/image-upload";
+import { SeoFields, EMPTY_SEO, seoIsValid, type SeoValues } from "@/components/v0/seo-fields";
 
 export default function CreateBlogPage() {
   const router = useRouter();
@@ -17,6 +18,8 @@ export default function CreateBlogPage() {
     tags: "",
     photo: "",
   });
+  const [seo, setSeo] = useState<SeoValues>(EMPTY_SEO);
+  const [category, setCategory] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -58,6 +61,11 @@ export default function CreateBlogPage() {
       return;
     }
 
+    if (!seoIsValid(seo)) {
+      setError("The schema override is not valid JSON. Fix or clear it to save.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -74,6 +82,8 @@ export default function CreateBlogPage() {
         body: JSON.stringify({
           ...formData,
           tags,
+          category: category || undefined,
+          seo,
         }),
       });
 
@@ -162,6 +172,15 @@ export default function CreateBlogPage() {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
+
+            <SeoFields
+              seo={seo}
+              category={category}
+              fallbackTitle={formData.title}
+              fallbackDescription={formData.description}
+              onSeoChange={setSeo}
+              onCategoryChange={setCategory}
+            />
 
             {/* Content Editor */}
             <div>
