@@ -3,7 +3,6 @@ import { type NextRequest, NextResponse } from "next/server"
 export async function POST(request: NextRequest) {
   try {
     const { username, password } = await request.json()
-    console.log(username, password)
     // Hardcoded credentials check
     if (username === "admin_root" && password === "admin123") {
       const response = NextResponse.json(

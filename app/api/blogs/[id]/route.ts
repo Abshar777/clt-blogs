@@ -22,6 +22,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
 
     return NextResponse.json(serializeBlog(blog))
   } catch (error) {
+    console.error("GET /api/blogs/[id] error:", error)
     return NextResponse.json({ error: "Failed to fetch blog" }, { status: 500 })
   }
 }
@@ -69,6 +70,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
 
     return NextResponse.json(serializeBlog(blog))
   } catch (error) {
+    console.error("PUT /api/blogs/[id] error:", error)
     return NextResponse.json({ error: "Failed to update blog" }, { status: 500 })
   }
 }
@@ -90,6 +92,7 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
 
     return NextResponse.json({ message: "Blog deleted successfully" })
   } catch (error) {
+    console.error("DELETE /api/blogs/[id] error:", error)
     return NextResponse.json({ error: "Failed to delete blog" }, { status: 500 })
   }
 }

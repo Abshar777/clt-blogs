@@ -133,7 +133,7 @@ export default function EditBlogPage() {
 
   if (loading) {
     return (
-      <AdminGuard>
+      <AdminGuard onAuthFailed={() => router.push("/admin/login")}>
         <div className="flex items-center justify-center min-h-screen">
           <p className="text-gray-600">Loading blog...</p>
         </div>
@@ -142,7 +142,7 @@ export default function EditBlogPage() {
   }
 
   return (
-    <AdminGuard>
+    <AdminGuard onAuthFailed={() => router.push("/admin/login")}>
       <div className="min-h-screen bg-gray-50">
         <header className="bg-white shadow">
           <div className="max-w-4xl mx-auto px-4 py-6">

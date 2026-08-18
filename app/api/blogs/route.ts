@@ -17,6 +17,7 @@ export async function GET(request: NextRequest) {
     
     return NextResponse.json(blogs.map(serializeBlog))
   } catch (error) {
+    console.error("GET /api/blogs error:", error)
     return NextResponse.json({ error: "Failed to fetch blogs" }, { status: 500 })
   }
 }
@@ -54,6 +55,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(serializeBlog(populatedBlog || blog), { status: 201 })
   } catch (error) {
+    console.error("POST /api/blogs error:", error)
     return NextResponse.json({ error: "Failed to create blog" }, { status: 500 })
   }
 }

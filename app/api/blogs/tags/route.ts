@@ -16,6 +16,7 @@ export async function GET() {
     
     return NextResponse.json(uniqueTags)
   } catch (error) {
+    console.error("GET /api/blogs/tags error:", error)
     return NextResponse.json({ error: "Failed to fetch tags" }, { status: 500 })
   }
 }
