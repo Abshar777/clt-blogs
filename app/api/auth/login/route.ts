@@ -3,14 +3,24 @@ import { type NextRequest, NextResponse } from "next/server"
 export async function POST(request: NextRequest) {
   try {
     const { username, password } = await request.json()
-    // Hardcoded credentials check
-    if (username === "admin_root" && password === "admin123") {
+    const adminUsername = process.env.ADMIN_USERNAME
+    const adminPassword = process.env.ADMIN_PASSWORD
+
+    if (!adminUsername || !adminPassword) {
+      console.error("ADMIN_USERNAME/ADMIN_PASSWORD are not set")
+      return NextResponse.json(
+        { success: false, message: "Admin login is not configured" },
+        { status: 500 },
+      )
+    }
+
+    if (username === adminUsername && password === adminPassword) {
       const response = NextResponse.json(
         {
           success: true,
           message: "Login successful",
           admin: {
-            username: "admin_root",
+            username: adminUsername,
           },
         },
         { status: 200 },
@@ -35,6 +45,7 @@ export async function POST(request: NextRequest) {
       { status: 401 },
     )
   } catch (error) {
+    console.error("POST /api/auth/login error:", error)
     return NextResponse.json(
       {
         success: false,

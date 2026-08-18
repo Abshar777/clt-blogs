@@ -26,6 +26,12 @@ R2_BUCKET=your-r2-bucket-name
 R2_PUBLIC_BASE_URL=https://pub-xxxxxxxx.r2.dev
 \`\`\`
 
+### Admin Login
+\`\`\`
+ADMIN_USERNAME=your-admin-username
+ADMIN_PASSWORD=your-admin-password
+\`\`\`
+
 ## Getting Environment Variables
 
 ### MongoDB
@@ -46,11 +52,8 @@ R2_PUBLIC_BASE_URL=https://pub-xxxxxxxx.r2.dev
 
 ## Admin Credentials
 
-Default admin login:
-- Username: `admin_root`
-- Password: `admin123`
-
-> Note: These are hardcoded. To change, edit `/app/api/auth/login/route.ts`
+Admin login is set via `ADMIN_USERNAME` / `ADMIN_PASSWORD` in `.env`. The
+server refuses to start login if either is unset.
 
 ## Installation & Running
 
@@ -66,7 +69,7 @@ npm run dev
 
 ## Features
 
-- Admin authentication with hardcoded credentials
+- Admin authentication via env-configured credentials
 - Create blogs with title, description, tags, and content
 - Rich text editor for blog content
 - Image upload to Cloudflare R2
@@ -135,5 +138,5 @@ The script is idempotent: blogs whose `photo` already points at
 - Check username and password
 
 ### Admin login not working
-- Verify username is exactly `admin_root` and password is `admin123`
+- Verify `ADMIN_USERNAME` / `ADMIN_PASSWORD` are set in `.env` and match what you're typing
 - Check browser cookies are enabled

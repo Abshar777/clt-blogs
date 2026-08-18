@@ -31,8 +31,3 @@ export const INITIAL_POSTS: Post[] = [
     author: 'Admin'
   }
 ];
-
-export const ADMIN_CREDENTIALS = {
-  username: 'admin_root',
-  password: 'admin123'
-};

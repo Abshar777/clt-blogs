@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
 import { AuthorProfile, Post, User } from "@/types";
-import { ADMIN_CREDENTIALS, INITIAL_POSTS } from "@/constants";
+import { INITIAL_POSTS } from "@/constants";
 import BlogCard from "@/components/v1/BlogCard";
 import PostModal from "@/components/v1/PostModal";
 import AdminPanel from "@/components/v1/AdminPanel";
@@ -89,16 +89,7 @@ const App: React.FC = () => {
         alert("Credential verification failed.");
       }
     } catch (err) {
-      // Fallback for demo if API not available
-      if (
-        loginData.username === ADMIN_CREDENTIALS.username &&
-        loginData.password === ADMIN_CREDENTIALS.password
-      ) {
-        setCurrentUser({ id: "admin-1", username: "admin", role: "admin" });
-        setShowLoginModal(false);
-      } else {
-        alert("Identity check failure.");
-      }
+      alert("Identity check failure.");
     }
   };
 
