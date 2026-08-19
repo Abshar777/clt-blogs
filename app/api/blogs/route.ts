@@ -3,6 +3,7 @@ import { Author } from "@/lib/models/Author"
 import { Blog } from "@/lib/models/Blog"
 import { serializeBlog } from "@/lib/serializers/blog"
 import { uniqueSlug } from "@/lib/slug"
+import { normalizeBlogContent } from "@/lib/normalizeContent"
 import { type NextRequest, NextResponse } from "next/server"
 
 export async function GET(request: NextRequest) {
@@ -40,6 +41,7 @@ export async function POST(request: NextRequest) {
 
     const blog = await Blog.create({
       ...data,
+      content: normalizeBlogContent(data.content || ""),
       slug: await uniqueSlug(data.slug || data.title),
       category: data.category || null,
       seo: data.seo || {},

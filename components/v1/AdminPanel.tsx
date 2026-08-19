@@ -29,6 +29,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     description: "",
     content: "",
     photo: "",
+    readTime: "",
     tags: "",
     authorId: "",
   });
@@ -47,6 +48,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         description: editingPost.description,
         content: editingPost.content,
         photo: editingPost.photo,
+        readTime: editingPost.readTime ? String(editingPost.readTime) : "",
         tags: editingPost.tags.join(", "),
         authorId: editingPost.authorId || "",
       });
@@ -112,6 +114,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
       return;
     }
 
+    const readTimeMinutes = Number(formData.readTime);
+    if (!formData.readTime || !Number.isInteger(readTimeMinutes) || readTimeMinutes < 1) {
+      alert("Reading Time is required and must be a whole number of minutes (1 or more).");
+      return;
+    }
+
     setIsProcessing(true);
     setAiStatus("Synchronizing with Database...");
 
@@ -122,6 +130,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         formData.content.replace(/<[^>]*>?/gm, "").substring(0, 150) + "...",
       content: formData.content,
       photo: formData.photo,
+      readTime: readTimeMinutes,
       tags: formData.tags
         .split(",")
         .map((t) => t.trim())
@@ -273,6 +282,18 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                   setFormData({ ...formData, tags: e.target.value })
                 }
                 placeholder="Tags: Tech, Future, AI"
+                className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-3 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 500/50 transition-all text-sm"
+              />
+              <input
+                type="number"
+                min={1}
+                step={1}
+                required
+                value={formData.readTime}
+                onChange={(e) =>
+                  setFormData({ ...formData, readTime: e.target.value })
+                }
+                placeholder="Reading Time (minutes) *"
                 className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-3 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 500/50 transition-all text-sm"
               />
             </div>

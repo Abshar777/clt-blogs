@@ -14,6 +14,7 @@ export interface Post {
   description: string;
   content: string;
   photo: string;
+  readTime?: number;
   tags: string[];
   createdAt: string;
   updatedAt: string;

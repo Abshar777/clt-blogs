@@ -59,6 +59,14 @@ const blogSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    // Manually set by the author, in whole minutes. Word-count estimation
+    // was replaced because it was frequently wrong on posts with tables,
+    // code blocks, or embedded media.
+    readTime: {
+      type: Number,
+      required: true,
+      min: 1,
+    },
     author: {
       type: String,
       default: "Admin",
