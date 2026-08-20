@@ -148,7 +148,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
       onClose();
     } catch (error) {
       console.error(error);
-      alert("Database error. Operation failed.");
+      alert(error instanceof Error ? error.message : "Database error. Operation failed.");
     } finally {
       setIsProcessing(false);
       setAiStatus("");

@@ -102,45 +102,33 @@ const App: React.FC = () => {
   };
 
   const handleAddPost = async (newPostData: Partial<Post>) => {
-    try {
-      const response = await fetch("/api/blogs", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newPostData),
-      });
+    const response = await fetch("/api/blogs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newPostData),
+    });
 
-      if (response.ok) {
-        await fetchPosts();
-      } else {
-        throw new Error("API Write Error");
-      }
-    } catch (error) {
-      console.error("Write Error:", error);
-      const fallback: Post = {
-        ...(newPostData as any),
-        _id: Date.now().toString(),
-        createdAt: new Date().toISOString(),
-      };
-      setPosts((prev) => [fallback, ...prev]);
+    if (!response.ok) {
+      const data = await response.json().catch(() => null);
+      throw new Error(data?.error || "Failed to save the post. Nothing was published.");
     }
+
+    await fetchPosts();
   };
 
   const handleUpdatePost = async (id: string, postData: Partial<Post>) => {
-    try {
-      const response = await fetch(`/api/blogs/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(postData),
-      });
-      if (response.ok) {
-        await fetchPosts();
-      }
-    } catch (error) {
-      console.error("Update Error:", error);
-      setPosts((prev) =>
-        prev.map((p) => (p._id === id ? { ...p, ...postData } : p)),
-      );
+    const response = await fetch(`/api/blogs/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(postData),
+    });
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => null);
+      throw new Error(data?.error || "Failed to save changes. Nothing was updated.");
     }
+
+    await fetchPosts();
   };
 
   const handleDeletePost = async (id: string) => {
