@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface ImageUploadProps {
   onImageUpload: (url: string) => void;
@@ -12,6 +12,13 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(currentImage || null);
   const [error, setError] = useState("");
+
+  // currentImage often arrives after mount (e.g. the edit form loads the
+  // post asynchronously) - useState's initial value only applies once, so
+  // without this the preview stays empty even though a photo is already set.
+  useEffect(() => {
+    setPreview(currentImage || null);
+  }, [currentImage]);
 
   const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
   const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
