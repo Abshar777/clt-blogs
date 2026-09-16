@@ -286,6 +286,7 @@ const App: React.FC = () => {
             onClose={handleClosePanel}
             editingPost={editingPost}
             authors={authors}
+            posts={posts}
             onAuthorCreated={fetchAuthors}
           />
         </AdminGuard>
