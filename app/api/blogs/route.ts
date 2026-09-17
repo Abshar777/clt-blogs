@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
     await connectDB()
     const blogs = await Blog.find(category ? { tags: { $in: [category] } } : {})
       .populate("authorId", "name profession link createdAt updatedAt")
+      .populate("reviewerId", "name profession link createdAt updatedAt")
       .sort({ createdAt: -1 })
     
     return NextResponse.json(blogs.map(serializeBlog))
@@ -46,14 +47,18 @@ export async function POST(request: NextRequest) {
       category: data.category || null,
       seo: data.seo || {},
       tags: data.tags || [],
+      // Anything other than an explicit "guide" is an ordinary post.
+      type: data.type === "guide" ? "guide" : "post",
       author: selectedAuthor?.name || data.author || "Admin",
       authorId: data.authorId || null,
+      reviewerId: data.reviewerId || null,
+      relatedCourses: Array.isArray(data.relatedCourses) ? data.relatedCourses : [],
+      relatedPosts: Array.isArray(data.relatedPosts) ? data.relatedPosts : [],
     })
 
-    const populatedBlog = await Blog.findById(blog._id).populate(
-      "authorId",
-      "name profession link createdAt updatedAt",
-    )
+    const populatedBlog = await Blog.findById(blog._id)
+      .populate("authorId", "name profession link createdAt updatedAt")
+      .populate("reviewerId", "name profession link createdAt updatedAt")
 
     return NextResponse.json(serializeBlog(populatedBlog || blog), { status: 201 })
   } catch (error) {

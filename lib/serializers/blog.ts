@@ -15,7 +15,26 @@ type BlogDocLike = {
   _id?: Types.ObjectId | string;
   author?: string;
   authorId?: Types.ObjectId | string | PopulatedAuthor | null;
+  reviewerId?: Types.ObjectId | string | PopulatedAuthor | null;
 };
+
+/** A ref is either populated to a full author document or left as an id. */
+const populated = (value: unknown): PopulatedAuthor | null =>
+  value && typeof value === "object" && "name" in (value as object)
+    ? (value as PopulatedAuthor)
+    : null;
+
+const asProfile = (author: PopulatedAuthor | null) =>
+  author
+    ? {
+        _id: String(author._id),
+        name: author.name,
+        profession: author.profession,
+        link: author.link,
+        createdAt: author.createdAt?.toISOString(),
+        updatedAt: author.updatedAt?.toISOString(),
+      }
+    : null;
 
 export function serializeBlog(blog: BlogDocLike) {
   const base: any =
@@ -25,10 +44,8 @@ export function serializeBlog(blog: BlogDocLike) {
         ? { ...blog._doc }
         : { ...blog };
 
-  const resolvedAuthor =
-    base.authorId && typeof base.authorId === "object" && "name" in base.authorId
-      ? (base.authorId as PopulatedAuthor)
-      : null;
+  const resolvedAuthor = populated(base.authorId);
+  const resolvedReviewer = populated(base.reviewerId);
 
   return {
     ...base,
@@ -39,15 +56,12 @@ export function serializeBlog(blog: BlogDocLike) {
         ? String(base.authorId)
         : undefined,
     author: resolvedAuthor?.name || base.author || "Admin",
-    authorDetails: resolvedAuthor
-      ? {
-          _id: String(resolvedAuthor._id),
-          name: resolvedAuthor.name,
-          profession: resolvedAuthor.profession,
-          link: resolvedAuthor.link,
-          createdAt: resolvedAuthor.createdAt?.toISOString(),
-          updatedAt: resolvedAuthor.updatedAt?.toISOString(),
-        }
-      : null,
+    authorDetails: asProfile(resolvedAuthor),
+    reviewerId: resolvedReviewer
+      ? String(resolvedReviewer._id)
+      : base.reviewerId
+        ? String(base.reviewerId)
+        : undefined,
+    reviewerDetails: asProfile(resolvedReviewer),
   };
 }

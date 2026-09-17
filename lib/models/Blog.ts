@@ -45,6 +45,37 @@ const blogSchema = new mongoose.Schema(
       ],
       default: null,
     },
+    // Separates the pillar reference guides served from /learn from ordinary
+    // blog posts. Defaults to "post" so every existing record keeps its
+    // current behaviour with no migration.
+    type: {
+      type: String,
+      enum: ["post", "guide"],
+      default: "post",
+      index: true,
+    },
+    // Second byline for guides: who checked the content, as opposed to who
+    // wrote it. Reviewers and authors are the same kind of entity, so both
+    // point at the Author collection rather than duplicating name/title/link
+    // on every document.
+    reviewerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Author",
+      default: null,
+    },
+    // Course ids for the call to action. The public site has read this field
+    // since the related-course block shipped, but it was never defined here,
+    // so Mongoose stripped it on every save and the value could never persist.
+    relatedCourses: {
+      type: [Number],
+      default: [],
+    },
+    // Supporting articles an editor maps to a pillar guide.
+    relatedPosts: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Blog",
+      default: [],
+    },
     // Lets marketing publish an optimised page without a code deploy.
     seo: {
       metaTitle: { type: String, trim: true, default: "" },

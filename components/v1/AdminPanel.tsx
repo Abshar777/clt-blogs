@@ -13,8 +13,20 @@ interface AdminPanelProps {
   onClose: () => void;
   editingPost: Post | null;
   authors: AuthorProfile[];
+  posts: Post[];
   onAuthorCreated: () => Promise<void>;
 }
+
+/**
+ * Mirrors the course catalogue on the public site, which keeps courses in code
+ * rather than in this CMS. Ids must match COURSE_SLUGS there.
+ */
+const COURSE_OPTIONS = [
+  { id: 1, name: "Trade Craft (beginner)" },
+  { id: 2, name: "Profit Matrix (intermediate)" },
+  { id: 3, name: "Market Code (advanced)" },
+  { id: 4, name: "CLT Vantage (mentorship)" },
+];
 
 const AdminPanel: React.FC<AdminPanelProps> = ({
   onAddPost,
@@ -22,6 +34,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
   onClose,
   editingPost,
   authors,
+  posts,
   onAuthorCreated,
 }) => {
   const [formData, setFormData] = useState({
@@ -32,7 +45,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     readTime: "",
     tags: "",
     authorId: "",
+    type: "post",
+    reviewerId: "",
   });
+  const [relatedCourses, setRelatedCourses] = useState<number[]>([]);
+  const [relatedPosts, setRelatedPosts] = useState<string[]>([]);
   const [newAuthor, setNewAuthor] = useState({
     name: "",
     profession: "",
@@ -51,7 +68,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         readTime: editingPost.readTime ? String(editingPost.readTime) : "",
         tags: editingPost.tags.join(", "),
         authorId: editingPost.authorId || "",
+        type: editingPost.type === "guide" ? "guide" : "post",
+        reviewerId: editingPost.reviewerId || "",
       });
+      setRelatedCourses(editingPost.relatedCourses || []);
+      setRelatedPosts(editingPost.relatedPosts || []);
     }
   }, [editingPost]);
 
@@ -137,6 +158,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         .filter((t) => t !== ""),
       author: "Admin",
       authorId: formData.authorId || null,
+      type: formData.type === "guide" ? "guide" : "post",
+      reviewerId: formData.reviewerId || null,
+      relatedCourses,
+      relatedPosts,
     };
 
     try {
@@ -296,6 +321,122 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                 placeholder="Reading Time (minutes) *"
                 className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-3 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 500/50 transition-all text-sm"
               />
+            </div>
+
+            <div className="space-y-3">
+              <label className="text-xs font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">
+                Publish As
+              </label>
+              <select
+                value={formData.type}
+                onChange={(e) =>
+                  setFormData({ ...formData, type: e.target.value })
+                }
+                className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-3 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-600 transition-all text-sm"
+              >
+                <option value="post">Blog post — /blogs</option>
+                <option value="guide">Reference guide — /learn</option>
+              </select>
+              <p className="text-[10px] text-zinc-600 leading-relaxed ml-1">
+                A guide is served from /learn and is deliberately kept out of the
+                blog listing, the category hubs and the blog sitemap, so the same
+                content never sits on two indexable URLs.
+              </p>
+
+              {formData.type === "guide" && (
+                <div className="border border-zinc-800 rounded-2xl p-4 space-y-4">
+                  <div className="space-y-2">
+                    <p className="text-[10px] text-zinc-500 font-black uppercase tracking-[0.2em]">
+                      Reviewed By
+                    </p>
+                    <select
+                      value={formData.reviewerId}
+                      onChange={(e) =>
+                        setFormData({ ...formData, reviewerId: e.target.value })
+                      }
+                      className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-3 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-600 transition-all text-sm"
+                    >
+                      <option value="">No reviewer</option>
+                      {authors.map((author) => (
+                        <option key={author._id} value={author._id}>
+                          {author.name} - {author.profession}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="text-[10px] text-zinc-600 leading-relaxed">
+                      Shown as a second byline and published as reviewedBy in the
+                      page schema. Leave empty if nobody has checked it.
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="text-[10px] text-zinc-500 font-black uppercase tracking-[0.2em]">
+                      Course Call To Action
+                    </p>
+                    {COURSE_OPTIONS.map((course) => (
+                      <label
+                        key={course.id}
+                        className="flex items-center gap-3 text-sm text-zinc-300 cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={relatedCourses.includes(course.id)}
+                          onChange={(e) =>
+                            setRelatedCourses((prev) =>
+                              e.target.checked
+                                ? [...prev, course.id]
+                                : prev.filter((id) => id !== course.id),
+                            )
+                          }
+                        />
+                        <span>{course.name}</span>
+                      </label>
+                    ))}
+                    <p className="text-[10px] text-zinc-600 leading-relaxed">
+                      Up to two are shown. Leave all unchecked to let the site
+                      pick by category.
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="text-[10px] text-zinc-500 font-black uppercase tracking-[0.2em]">
+                      Supporting Articles
+                    </p>
+                    <div className="max-h-48 overflow-y-auto space-y-2 pr-1">
+                      {posts
+                        .filter(
+                          (post) =>
+                            post.type !== "guide" &&
+                            post._id !== editingPost?._id,
+                        )
+                        .map((post) => (
+                          <label
+                            key={post._id}
+                            className="flex items-start gap-3 text-sm text-zinc-300 cursor-pointer"
+                          >
+                            <input
+                              type="checkbox"
+                              className="mt-1"
+                              checked={relatedPosts.includes(post._id)}
+                              onChange={(e) =>
+                                setRelatedPosts((prev) =>
+                                  e.target.checked
+                                    ? [...prev, post._id]
+                                    : prev.filter((id) => id !== post._id),
+                                )
+                              }
+                            />
+                            <span className="leading-snug">{post.title}</span>
+                          </label>
+                        ))}
+                    </div>
+                    <p className="text-[10px] text-zinc-600 leading-relaxed">
+                      These stay in the blog. Leave empty to fall back to the
+                      guide's category.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="space-y-3">
