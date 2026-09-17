@@ -14,6 +14,8 @@ interface AdminPanelProps {
   editingPost: Post | null;
   authors: AuthorProfile[];
   posts: Post[];
+  /** Set by whichever button opened the panel; decides where a new entry publishes. */
+  initialType?: "post" | "guide";
   onAuthorCreated: () => Promise<void>;
 }
 
@@ -35,6 +37,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
   editingPost,
   authors,
   posts,
+  initialType = "post",
   onAuthorCreated,
 }) => {
   const [formData, setFormData] = useState({
@@ -45,7 +48,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     readTime: "",
     tags: "",
     authorId: "",
-    type: "post",
+    type: initialType,
     reviewerId: "",
   });
   const [relatedCourses, setRelatedCourses] = useState<number[]>([]);
@@ -219,7 +222,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         onClick={onClose}
       ></div>
 
-      <div className="relative w-full max-w-5xl bg-zinc-900 border border-zinc-800 rounded-3xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-4 duration-500">
+      <div className="relative w-full max-w-[1500px] bg-zinc-900 border border-zinc-800 rounded-3xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-4 duration-500">
         <div className="px-8 py-6 border-b border-zinc-800 flex justify-between items-center bg-zinc-900/50">
           <div className="flex items-center space-x-4">
             <div className="w-12 h-12 rounded-2xl bg-primary/20 600/10 flex items-center justify-center text-primary/50 500 border border-primary/50 500/20">
@@ -229,10 +232,13 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
             </div>
             <div>
               <h2 className="text-xl font-black text-zinc-100 uppercase tracking-tight">
-                {editingPost ? "Update Entry" : "New Transmission"}
+                {editingPost ? "Edit" : "New"}{" "}
+                {formData.type === "guide" ? "Learn Guide" : "Blog Post"}
               </h2>
               <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">
-                clt 
+                {formData.type === "guide"
+                  ? "Publishes to clt-academy.com/learn"
+                  : "Publishes to clt-academy.com/blogs"}
               </p>
             </div>
           </div>
@@ -246,7 +252,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
 
         <form
           onSubmit={handleSubmit}
-          className="p-8 grid grid-cols-1 lg:grid-cols-12 gap-10 max-h-[80vh] overflow-y-auto custom-scrollbar"
+          className="p-8 grid grid-cols-1 lg:grid-cols-12 gap-10 max-h-[86vh] overflow-y-auto custom-scrollbar"
         >
           <div className="lg:col-span-4 space-y-6">
             <div className="space-y-2">
@@ -259,14 +265,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                 onChange={(e) =>
                   setFormData({ ...formData, title: e.target.value })
                 }
-                placeholder="The Future is Now..."
+                placeholder="Post title"
                 className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 500/50 transition-all font-bold"
               />
             </div>
 
             <div className="space-y-2">
               <label className="text-xs font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">
-                Hero Asset
+                Cover Image
               </label>
               <ImageUpload
                 onImageUpload={handleImageUpload}
@@ -297,7 +303,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                 onChange={(e) =>
                   setFormData({ ...formData, description: e.target.value })
                 }
-                placeholder="SEO Summary..."
+                placeholder="Short summary shown in listings and search results"
                 className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-3 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 500/50 transition-all resize-none text-sm leading-relaxed"
               />
               <input
@@ -306,7 +312,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                 onChange={(e) =>
                   setFormData({ ...formData, tags: e.target.value })
                 }
-                placeholder="Tags: Tech, Future, AI"
+                placeholder="Tags, separated by commas"
                 className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-3 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 500/50 transition-all text-sm"
               />
               <input
@@ -325,22 +331,34 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
 
             <div className="space-y-3">
               <label className="text-xs font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">
-                Publish As
+                Publishing As
               </label>
-              <select
-                value={formData.type}
-                onChange={(e) =>
-                  setFormData({ ...formData, type: e.target.value })
-                }
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-3 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-600 transition-all text-sm"
-              >
-                <option value="post">Blog post — /blogs</option>
-                <option value="guide">Reference guide — /learn</option>
-              </select>
+              {/* Chosen by the button that opened this panel, so nobody has to
+                  know that a hidden dropdown decides where the page appears.
+                  Still switchable while editing, since a post can be promoted. */}
+              <div className="flex gap-2">
+                {[
+                  { v: "post", label: "Blog Post", path: "/blogs" },
+                  { v: "guide", label: "Learn Guide", path: "/learn" },
+                ].map((o) => (
+                  <button
+                    key={o.v}
+                    type="button"
+                    onClick={() => setFormData({ ...formData, type: o.v })}
+                    className={`flex-1 rounded-2xl border px-4 py-3 text-left transition-all ${
+                      formData.type === o.v
+                        ? "border-primary bg-primary/10 text-zinc-100"
+                        : "border-zinc-800 bg-zinc-950 text-zinc-500 hover:border-zinc-700"
+                    }`}
+                  >
+                    <span className="block text-sm font-bold">{o.label}</span>
+                    <span className="block text-[10px] text-zinc-500">{o.path}</span>
+                  </button>
+                ))}
+              </div>
               <p className="text-[10px] text-zinc-600 leading-relaxed ml-1">
-                A guide is served from /learn and is deliberately kept out of the
-                blog listing, the category hubs and the blog sitemap, so the same
-                content never sits on two indexable URLs.
+                A guide lives at /learn and is kept out of the blog listing and
+                blog sitemap, so the same content never sits at two addresses.
               </p>
 
               {formData.type === "guide" && (
@@ -504,10 +522,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
             </div>
           </div>
 
-          <div className="lg:col-span-8 flex flex-col space-y-4">
+          <div className="lg:col-span-8 flex flex-col space-y-4 min-h-[60vh]">
             <div className="flex justify-between items-center mb-1">
               <label className="text-xs font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">
-                Content Block
+                Content
               </label>
               <button
                 type="button"
@@ -516,7 +534,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                 className="text-[10px] font-black uppercase tracking-widest text-primary/50 400 hover:text-primary/50 300 disabled:opacity-30 transition-all flex items-center space-x-1"
               >
                 <i className="fa-solid fa-wand-magic-sparkles text-[8px]"></i>
-                <span>Gemini Refine</span>
+                <span>Improve wording</span>
               </button>
             </div>
 
