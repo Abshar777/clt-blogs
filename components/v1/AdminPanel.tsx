@@ -225,7 +225,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
       <div className="relative w-full max-w-[1500px] bg-zinc-900 border border-zinc-800 rounded-3xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-4 duration-500">
         <div className="px-8 py-6 border-b border-zinc-800 flex justify-between items-center bg-zinc-900/50">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 rounded-2xl bg-primary/20 600/10 flex items-center justify-center text-primary/50 500 border border-primary/50 500/20">
+            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
               <i
                 className={`fa-solid ${editingPost ? "fa-pen-to-square" : "fa-plus"} text-xl`}
               ></i>
@@ -266,7 +266,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                   setFormData({ ...formData, title: e.target.value })
                 }
                 placeholder="Post title"
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 500/50 transition-all font-bold"
+                className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-bold"
               />
             </div>
 
@@ -291,7 +291,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                   disabled={
                     isProcessing || !formData.title || !formData.content
                   }
-                  className="text-[10px] font-black uppercase tracking-widest text-primary/50 400 hover:text-primary/50 300 disabled:opacity-30 transition-all flex items-center space-x-1"
+                  className="text-[10px] font-black uppercase tracking-widest text-primary hover:text-primary disabled:opacity-30 transition-all flex items-center space-x-1"
                 >
                   <i className="fa-solid fa-sparkles text-[8px]"></i>
                   <span>AI Generate</span>
@@ -304,7 +304,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                   setFormData({ ...formData, description: e.target.value })
                 }
                 placeholder="Short summary shown in listings and search results"
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-3 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 500/50 transition-all resize-none text-sm leading-relaxed"
+                className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-3 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none text-sm leading-relaxed"
               />
               <input
                 type="text"
@@ -313,7 +313,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                   setFormData({ ...formData, tags: e.target.value })
                 }
                 placeholder="Tags, separated by commas"
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-3 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 500/50 transition-all text-sm"
+                className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-3 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm"
               />
               <input
                 type="number"
@@ -325,7 +325,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                   setFormData({ ...formData, readTime: e.target.value })
                 }
                 placeholder="Reading Time (minutes) *"
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-3 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 500/50 transition-all text-sm"
+                className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-3 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm"
               />
             </div>
 
@@ -466,7 +466,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                 onChange={(e) =>
                   setFormData({ ...formData, authorId: e.target.value })
                 }
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-3 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 500/50 transition-all text-sm"
+                className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-5 py-3 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm"
               >
                 <option value="">Default Admin</option>
                 {authors.map((author) => (
@@ -487,7 +487,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                     setNewAuthor((prev) => ({ ...prev, name: e.target.value }))
                   }
                   placeholder="Name"
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 500/50 text-sm"
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
                 />
                 <input
                   type="text"
@@ -499,7 +499,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                     }))
                   }
                   placeholder="Profession"
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 500/50 text-sm"
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
                 />
                 <input
                   type="url"
@@ -508,7 +508,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                     setNewAuthor((prev) => ({ ...prev, link: e.target.value }))
                   }
                   placeholder="Profile Link (https://...)"
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 500/50 text-sm"
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm"
                 />
                 <button
                   type="button"
@@ -531,7 +531,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                 type="button"
                 onClick={handleImproveContent}
                 disabled={isProcessing || !formData.content}
-                className="text-[10px] font-black uppercase tracking-widest text-primary/50 400 hover:text-primary/50 300 disabled:opacity-30 transition-all flex items-center space-x-1"
+                className="text-[10px] font-black uppercase tracking-widest text-primary hover:text-primary disabled:opacity-30 transition-all flex items-center space-x-1"
               >
                 <i className="fa-solid fa-wand-magic-sparkles text-[8px]"></i>
                 <span>Improve wording</span>
@@ -544,7 +544,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
             />
 
             {aiStatus && (
-              <div className="flex items-center space-x-3 py-2 px-4 rounded-xl bg-primary/50 500/5 border border-primary/50 500/10 text-primary/50 400 animate-pulse text-[10px] font-black uppercase tracking-widest">
+              <div className="flex items-center space-x-3 py-2 px-4 rounded-xl bg-primary/5 border border-primary/10 text-primary animate-pulse text-[10px] font-black uppercase tracking-widest">
                 <i className="fa-solid fa-atom fa-spin"></i>
                 <span>{aiStatus}</span>
               </div>

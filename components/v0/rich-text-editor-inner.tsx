@@ -79,7 +79,7 @@ export default function RichTextEditorInner({
         modules={modules}
         formats={formats}
         theme="snow"
-        placeholder="Unfold your narrative here..."
+        placeholder="Write the content here. Use Heading 2 for each section — those become the contents list on a guide page."
         className="text-zinc-200"
       />
     </div>

@@ -18,7 +18,7 @@ const BlogCard: React.FC<BlogCardProps> = ({
 }) => {
   return (
     <div
-      className="group relative bg-zinc-900 border border-zinc-800 rounded-[2rem] overflow-hidden hover:border-primary transition-all duration-500 cursor-pointer flex flex-col shadow-2xl hover:shadow-primary/50 500/10"
+      className="group relative bg-zinc-900 border border-zinc-800 rounded-[2rem] overflow-hidden hover:border-primary transition-all duration-500 cursor-pointer flex flex-col shadow-2xl hover:shadow-primary/10"
       onClick={() => onClick(post)}
     >
       <div className="aspect-[4/3] overflow-hidden relative">
@@ -36,7 +36,7 @@ const BlogCard: React.FC<BlogCardProps> = ({
                 e.stopPropagation();
                 onEdit?.(post);
               }}
-              className="w-10 h-10 rounded-xl bg-zinc-950/80 backdrop-blur-md border border-zinc-800 text-zinc-400 hover:text-primary/50 400 hover:border-primary/50 500/50 transition-all"
+              className="w-10 h-10 rounded-xl bg-zinc-950/80 backdrop-blur-md border border-zinc-800 text-zinc-400 hover:text-primary hover:border-primary/50 transition-all"
               title="Edit Entry"
             >
               <i className="fa-solid fa-pen-nib text-xs"></i>
@@ -68,7 +68,7 @@ const BlogCard: React.FC<BlogCardProps> = ({
             {post.tags.map((tag) => (
               <span
                 key={tag}
-                className="px-3 py-1 text-[8px] font-black uppercase tracking-[0.2em] bg-primary/10 600/20 text-primary 400 rounded-lg border border-primary/50 500/20 backdrop-blur-md"
+                className="px-3 py-1 text-[8px] font-black uppercase tracking-[0.2em] bg-primary/20 text-primary 400 rounded-lg border border-primary/20 backdrop-blur-md"
               >
                 {tag}
               </span>
@@ -87,7 +87,7 @@ const BlogCard: React.FC<BlogCardProps> = ({
 
         <div className="flex items-center justify-between mt-auto pt-6 border-t border-zinc-800/50">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center text-zinc-500 border border-zinc-700 shadow-inner group-hover:border-primary/50 500/30 transition-colors">
+            <div className="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center text-zinc-500 border border-zinc-700 shadow-inner group-hover:border-primary/30 transition-colors">
               <i className="fa-solid fa-user-astronaut text-sm"></i>
             </div>
             <div className="">
@@ -104,7 +104,7 @@ const BlogCard: React.FC<BlogCardProps> = ({
               </p>
             </div>
           </div>
-          <div className="w-8 h-8 rounded-full border border-zinc-800 flex items-center justify-center text-zinc-700 group-hover:text-primary/50 500 group-hover:border-primary/50 500/50 transition-all">
+          <div className="w-8 h-8 rounded-full border border-zinc-800 flex items-center justify-center text-zinc-700 group-hover:text-primary group-hover:border-primary/50 transition-all">
             <i className="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
           </div>
         </div>

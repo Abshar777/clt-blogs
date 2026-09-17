@@ -82,7 +82,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
   return (
     <div className="space-y-4 w-full">
       <div
-        className={`relative group border-2 border-dashed rounded-2xl p-6 text-center transition-all ${preview ? "border-primary/50 500/50 bg-primary/10 500/5" : "border-zinc-800 hover:border-zinc-700 bg-zinc-950"}`}
+        className={`relative group border-2 border-dashed rounded-2xl p-6 text-center transition-all ${preview ? "border-primary/50 bg-primary/5" : "border-zinc-800 hover:border-zinc-700 bg-zinc-950"}`}
       >
         <input
           type="file"
@@ -98,7 +98,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
         >
           {!preview ? (
             <>
-              <div className="w-12 h-12 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-500 group-hover:text-primary/50 400 group-hover:scale-110 transition-all">
+              <div className="w-12 h-12 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-500 group-hover:text-primary group-hover:scale-110 transition-all">
                 <i className="fa-solid fa-cloud-arrow-up text-xl"></i>
               </div>
               <div>
@@ -114,7 +114,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
             </>
           ) : (
             <div className="flex flex-col items-center gap-2">
-              <span className="text-xs font-bold text-primary/50 400 uppercase tracking-widest">
+              <span className="text-xs font-bold text-primary uppercase tracking-widest">
                 Image Ready
               </span>
               <span className="text-zinc-500 text-[10px]">
@@ -140,7 +140,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
           />
           {uploading && (
             <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center space-y-3">
-              <i className="fa-solid fa-circle-notch fa-spin text-3xl text-primary/50 500"></i>
+              <i className="fa-solid fa-circle-notch fa-spin text-3xl text-primary"></i>
               <span className="text-white text-sm font-bold animate-pulse">
                 Processing...
               </span>
