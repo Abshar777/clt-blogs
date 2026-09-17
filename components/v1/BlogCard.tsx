@@ -58,6 +58,13 @@ const BlogCard: React.FC<BlogCardProps> = ({
 
         <div className="absolute bottom-6 left-6 right-6">
           <div className="flex flex-wrap gap-2 mb-3">
+            {/* A guide is served from /learn, not /blogs. Without this the two
+                are indistinguishable in a list of thirty entries. */}
+            {post.type === "guide" && (
+              <span className="px-3 py-1 text-[8px] font-black uppercase tracking-[0.2em] bg-emerald-500/15 text-emerald-300 rounded-lg border border-emerald-500/40 backdrop-blur-md">
+                Guide · /learn
+              </span>
+            )}
             {post.tags.map((tag) => (
               <span
                 key={tag}
