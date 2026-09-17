@@ -179,7 +179,7 @@ const App: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-zinc-950 selection:bg-primary/50 500/30 selection:text-white">
+    <div className="min-h-screen bg-zinc-950 selection:bg-primary/30 selection:text-white">
       {/* Navigation */}
       <nav className="sticky top-0 z-40 w-full border-b border-zinc-900 bg-zinc-950/90 backdrop-blur-3xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -205,13 +205,13 @@ const App: React.FC = () => {
 
             {/* <div className="hidden lg:flex flex-1 max-w-2xl mx-16">
               <div className="relative w-full group">
-                <i className="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-zinc-600 text-sm group-focus-within:text-primary/50 500 transition-colors"></i>
+                <i className="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-zinc-600 text-sm group-focus-within:text-primary transition-colors"></i>
                 <input
                   type="text"
                   placeholder="Search by title or tag"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-3xl py-4 pl-14 pr-6 text-sm text-zinc-300 focus:outline-none focus:border-primary/50 500 focus:ring-8 focus:ring-primary/50 500/5 transition-all placeholder:text-zinc-700 font-bold"
+                  className="w-full bg-zinc-900 border border-zinc-800 rounded-3xl py-4 pl-14 pr-6 text-sm text-zinc-300 focus:outline-none focus:border-primary focus:ring-8 focus:ring-primary/5 transition-all placeholder:text-zinc-700 font-bold"
                 />
               </div>
             </div> */}
@@ -294,7 +294,7 @@ const App: React.FC = () => {
       <main className="max-w-[1400px] mx-auto px-6 sm:px-12 pb-48">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-60 space-y-8">
-            <div className="w-20 h-20 border-t-4 border-primary/50 600 rounded-full animate-spin"></div>
+            <div className="w-20 h-20 border-t-4 border-primary rounded-full animate-spin"></div>
             <span className="text-zinc-600 text-xs font-black uppercase tracking-[0.6em] animate-pulse">
               Loading
             </span>
@@ -349,7 +349,7 @@ const App: React.FC = () => {
             onClick={() => setShowLoginModal(false)}
           ></div>
           <div className="relative w-full max-w-lg bg-zinc-900 border border-zinc-800 rounded-[3rem] p-12 shadow-[0_0_150px_rgba(0,0,0,1)] animate-in zoom-in-95 duration-500">
-            <div className="w-24 h-24 rounded-3xl bg-primary/50 600 flex items-center justify-center shadow-[0_0_60px_-10px_rgba(124,58,237,1)] mx-auto mb-10 rotate-3">
+            <div className="w-24 h-24 rounded-3xl bg-primary flex items-center justify-center shadow-[0_0_60px_-10px_rgba(124,58,237,1)] mx-auto mb-10 rotate-3">
               <i className="fa-solid fa-fingerprint text-white text-5xl"></i>
             </div>
             <h2 className="text-4xl font-black text-center text-zinc-100 mb-4 uppercase tracking-tighter italic leading-none">
@@ -371,7 +371,7 @@ const App: React.FC = () => {
                   onChange={(e) =>
                     setLoginData({ ...loginData, username: e.target.value })
                   }
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-[1.5rem] px-8 py-5 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 500/50 transition-all font-bold tracking-tight"
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-[1.5rem] px-8 py-5 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-bold tracking-tight"
                   placeholder="Username"
                 />
               </div>
@@ -385,7 +385,7 @@ const App: React.FC = () => {
                   onChange={(e) =>
                     setLoginData({ ...loginData, password: e.target.value })
                   }
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-[1.5rem] px-8 py-5 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 500/50 transition-all font-bold tracking-tight"
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-[1.5rem] px-8 py-5 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-bold tracking-tight"
                   placeholder="••••••••"
                 />
               </div>

@@ -37,10 +37,10 @@ export const AdminGuard: React.FC<AdminGuardProps> = ({
     return (
       <div className="fixed inset-0 z-[100] bg-zinc-950 flex flex-col items-center justify-center space-y-6">
         <div className="relative w-24 h-24">
-          <div className="absolute inset-0 rounded-full border-4 border-primary/50 500/20"></div>
+          <div className="absolute inset-0 rounded-full border-4 border-primary/20"></div>
           <div className="absolute inset-0 rounded-full border-4 border-t-primary/50 500 animate-spin"></div>
           <div className="absolute inset-0 flex items-center justify-center">
-            <i className="fa-solid fa-atom text-3xl text-primary/50 400 animate-pulse"></i>
+            <i className="fa-solid fa-atom text-3xl text-primary animate-pulse"></i>
           </div>
         </div>
         <div className="text-sm font-black text-zinc-600 uppercase tracking-[0.4em]">
