@@ -18,6 +18,11 @@ const App: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [authors, setAuthors] = useState<AuthorProfile[]>([]);
+  // Blog posts and Learn guides are separate things in separate places on the
+  // website, so the admin lists them separately rather than mixing thirty
+  // entries together.
+  const [view, setView] = useState<"post" | "guide">("post");
+  const [newType, setNewType] = useState<"post" | "guide">("post");
 
   // Sync with Backend
   const fetchPosts = async () => {
@@ -153,7 +158,19 @@ const App: React.FC = () => {
     setEditingPost(null);
   };
 
-  const filteredPosts = posts.filter(
+  const openNew = (type: "post" | "guide") => {
+    setEditingPost(null);
+    setNewType(type);
+    setShowAdminPanel(true);
+  };
+
+  const inView = posts.filter((post) =>
+    view === "guide" ? post.type === "guide" : post.type !== "guide",
+  );
+  const postCount = posts.filter((p) => p.type !== "guide").length;
+  const guideCount = posts.filter((p) => p.type === "guide").length;
+
+  const filteredPosts = inView.filter(
     (post) =>
       post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       post.tags.some((tag) =>
@@ -191,7 +208,7 @@ const App: React.FC = () => {
                 <i className="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-zinc-600 text-sm group-focus-within:text-primary/50 500 transition-colors"></i>
                 <input
                   type="text"
-                  placeholder="Scan data clusters..."
+                  placeholder="Search by title or tag"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-zinc-900 border border-zinc-800 rounded-3xl py-4 pl-14 pr-6 text-sm text-zinc-300 focus:outline-none focus:border-primary/50 500 focus:ring-8 focus:ring-primary/50 500/5 transition-all placeholder:text-zinc-700 font-bold"
@@ -203,16 +220,23 @@ const App: React.FC = () => {
               {currentUser ? (
                 <div className="flex items-center space-x-6">
                   <button
-                    onClick={() => setShowAdminPanel(true)}
-                    className="flex items-center space-x-3 bg-white hover:bg-zinc-200 text-zinc-950 px-8 py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.2em] transition-all shadow-2xl active:scale-95"
+                    onClick={() => openNew("post")}
+                    className="flex items-center space-x-3 bg-white hover:bg-zinc-200 text-zinc-950 px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.15em] transition-all shadow-2xl active:scale-95"
                   >
                     <i className="fa-solid fa-plus-circle"></i>
-                    <span className="hidden sm:inline">New Data</span>
+                    <span className="hidden sm:inline">New Blog Post</span>
+                  </button>
+                  <button
+                    onClick={() => openNew("guide")}
+                    className="flex items-center space-x-3 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.15em] transition-all shadow-2xl active:scale-95"
+                  >
+                    <i className="fa-solid fa-plus-circle"></i>
+                    <span className="hidden sm:inline">New Learn Guide</span>
                   </button>
                   <button
                     onClick={handleLogout}
                     className="w-12 h-12 flex items-center justify-center rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-600 hover:text-red-500 hover:border-red-500/30 transition-all"
-                    title="Terminate Session"
+                    title="Log out"
                   >
                     <i className="fa-solid fa-power-off text-lg"></i>
                   </button>
@@ -232,10 +256,35 @@ const App: React.FC = () => {
       </nav>
 
       {/* Hero Header */}
-      <header className="pt-20 pb-24 px-6 text-center max-w-5xl mx-auto">
-        <h1 className="text-7xl  font-black tracking-tighter text-zinc-100 mb-12 bg-gradient-to-b from-white via-zinc-400 to-zinc-800 bg-clip-text text-transparent leading-[0.85] italic">
-          BLOGS
+      <header className="pt-16 pb-14 px-6 text-center max-w-5xl mx-auto">
+        <h1 className="text-7xl font-black tracking-tighter text-zinc-100 mb-3 bg-gradient-to-b from-white via-zinc-400 to-zinc-800 bg-clip-text text-transparent leading-[0.85] italic">
+          {view === "guide" ? "LEARN GUIDES" : "BLOGS"}
         </h1>
+        <p className="text-zinc-500 text-sm mb-10">
+          {view === "guide"
+            ? "Reference guides published at clt-academy.com/learn"
+            : "Articles published at clt-academy.com/blogs"}
+        </p>
+
+        <div className="inline-flex rounded-2xl border border-zinc-800 bg-zinc-900 p-1.5 gap-1.5">
+          {([
+            { v: "post", label: "Blog Posts", n: postCount },
+            { v: "guide", label: "Learn Guides", n: guideCount },
+          ] as const).map((t) => (
+            <button
+              key={t.v}
+              onClick={() => setView(t.v)}
+              className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-[0.15em] transition-all ${
+                view === t.v
+                  ? "bg-white text-zinc-950"
+                  : "text-zinc-500 hover:text-zinc-300"
+              }`}
+            >
+              {t.label}
+              <span className="ml-2 opacity-60">{t.n}</span>
+            </button>
+          ))}
+        </div>
         {/* <p className="text-zinc-500 text-xl md:text-3xl max-w-3xl mx-auto font-light leading-relaxed tracking-tight">
           Architecting narratives across the digital horizon. Driven by Gemini's cognitive engines.
         </p> */}
@@ -247,7 +296,7 @@ const App: React.FC = () => {
           <div className="flex flex-col items-center justify-center py-60 space-y-8">
             <div className="w-20 h-20 border-t-4 border-primary/50 600 rounded-full animate-spin"></div>
             <span className="text-zinc-600 text-xs font-black uppercase tracking-[0.6em] animate-pulse">
-              Scanning Neural Clusters
+              Loading
             </span>
           </div>
         ) : filteredPosts.length > 0 ? (
@@ -266,8 +315,8 @@ const App: React.FC = () => {
         ) : (
           <div className="flex flex-col items-center justify-center py-48 text-zinc-900 border-4 border-dashed border-zinc-900 rounded-[4rem] group hover:border-zinc-800 transition-colors duration-1000">
             <i className="fa-solid fa-satellite-dish text-8xl mb-10 opacity-10 group-hover:rotate-12 transition-transform duration-1000"></i>
-            <p className="text-2xl font-black uppercase tracking-[0.6em] opacity-20">
-              Zero Signal Strength
+            <p className="text-2xl font-black uppercase tracking-[0.4em] opacity-20">
+              {view === "guide" ? "No guides yet" : "No posts yet"}
             </p>
           </div>
         )}
@@ -287,6 +336,7 @@ const App: React.FC = () => {
             editingPost={editingPost}
             authors={authors}
             posts={posts}
+            initialType={newType}
             onAuthorCreated={fetchAuthors}
           />
         </AdminGuard>
@@ -306,13 +356,13 @@ const App: React.FC = () => {
               Access Required
             </h2>
             <p className="text-zinc-600 text-center text-sm mb-12 font-bold uppercase tracking-[0.2em]">
-              Biometric verification in progress...
+              Sign in to manage posts and guides
             </p>
 
             <form onSubmit={handleLogin} className="space-y-8">
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em] ml-4 mb-2 block">
-                  Operator Identity
+                  Username
                 </label>
                 <input
                   type="text"
@@ -322,12 +372,12 @@ const App: React.FC = () => {
                     setLoginData({ ...loginData, username: e.target.value })
                   }
                   className="w-full bg-zinc-950 border border-zinc-800 rounded-[1.5rem] px-8 py-5 text-zinc-200 focus:outline-none focus:ring-2 focus:ring-primary/50 500/50 transition-all font-bold tracking-tight"
-                  placeholder="admin_root"
+                  placeholder="Username"
                 />
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em] ml-4 mb-2 block">
-                  Cortex Secret
+                  Password
                 </label>
                 <input
                   type="password"
