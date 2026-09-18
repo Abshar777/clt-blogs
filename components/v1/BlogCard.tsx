@@ -29,17 +29,23 @@ const BlogCard: React.FC<BlogCardProps> = ({
         />
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
 
+        {/* Always visible. These were opacity-0 until the card was hovered,
+            which hid them completely on any touch device and made them
+            undiscoverable on desktop — editors reported there was no way to
+            edit or delete anything at all. */}
         {isAdmin && (
-          <div className="absolute top-4 right-4 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0 duration-300">
+          <div className="absolute top-4 right-4 flex space-x-2">
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 onEdit?.(post);
               }}
-              className="w-10 h-10 rounded-xl bg-zinc-950/80 backdrop-blur-md border border-zinc-800 text-zinc-400 hover:text-primary hover:border-primary/50 transition-all"
-              title="Edit Entry"
+              className="flex items-center gap-2 h-10 px-3 rounded-xl bg-zinc-950/90 backdrop-blur-md border border-zinc-700 text-zinc-200 hover:text-primary hover:border-primary/50 transition-all text-xs font-bold uppercase tracking-wider"
+              title="Edit this entry"
+              aria-label={`Edit ${post.title}`}
             >
               <i className="fa-solid fa-pen-nib text-xs"></i>
+              Edit
             </button>
             <button
               onClick={(e) => {
@@ -48,10 +54,12 @@ const BlogCard: React.FC<BlogCardProps> = ({
                   onDelete?.(post._id);
                 }
               }}
-              className="w-10 h-10 rounded-xl bg-zinc-950/80 backdrop-blur-md border border-zinc-800 text-zinc-400 hover:text-red-500 hover:border-red-500/50 transition-all"
-              title="Erase Data"
+              className="flex items-center gap-2 h-10 px-3 rounded-xl bg-zinc-950/90 backdrop-blur-md border border-zinc-700 text-zinc-200 hover:text-red-500 hover:border-red-500/50 transition-all text-xs font-bold uppercase tracking-wider"
+              title="Delete this entry"
+              aria-label={`Delete ${post.title}`}
             >
               <i className="fa-solid fa-trash-can text-xs"></i>
+              Delete
             </button>
           </div>
         )}
