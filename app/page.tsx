@@ -188,7 +188,7 @@ const App: React.FC = () => {
               className="flex items-center space-x-4 cursor-pointer group"
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             >
-              <div className="w-12 h-12 rounded-2xl overflow-hidden bg-zinc-900 flex items-center justify-center shadow-[0_0_40px_-5px_rgba(124,58,237,0.5)] group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+              <div className="w-9 h-9 sm:w-12 sm:h-12 shrink-0 rounded-2xl overflow-hidden bg-zinc-900 flex items-center justify-center shadow-[0_0_40px_-5px_rgba(124,58,237,0.5)] group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
                 <img
                   src="/favicon.ico"
                   alt="CLT Academy logo"
@@ -196,7 +196,7 @@ const App: React.FC = () => {
                 />
               </div>
               <div>
-                <span className="text-3xl font-black tracking-tighter text-zinc-100 uppercase italic leading-none block">
+                <span className="text-lg sm:text-3xl font-black tracking-tighter text-zinc-100 uppercase italic leading-none block whitespace-nowrap">
                   Clt Academy
                 </span>
                 <span className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-600"></span>
@@ -216,26 +216,26 @@ const App: React.FC = () => {
               </div>
             </div> */}
 
-            <div className="flex items-center space-x-6">
+            <div className="flex items-center gap-2 sm:gap-6 shrink-0">
               {currentUser ? (
-                <div className="flex items-center space-x-6">
+                <div className="flex items-center gap-2 sm:gap-4">
                   <button
                     onClick={() => openNew("post")}
-                    className="flex items-center space-x-3 bg-white hover:bg-zinc-200 text-zinc-950 px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.15em] transition-all shadow-2xl active:scale-95"
+                    className="flex items-center gap-2 bg-white hover:bg-zinc-200 text-zinc-950 px-3 sm:px-6 py-3 sm:py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.15em] transition-all shadow-2xl active:scale-95 shrink-0"
                   >
                     <i className="fa-solid fa-plus-circle"></i>
                     <span className="hidden sm:inline">New Blog Post</span>
                   </button>
                   <button
                     onClick={() => openNew("guide")}
-                    className="flex items-center space-x-3 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.15em] transition-all shadow-2xl active:scale-95"
+                    className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 px-3 sm:px-6 py-3 sm:py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.15em] transition-all shadow-2xl active:scale-95 shrink-0"
                   >
                     <i className="fa-solid fa-plus-circle"></i>
                     <span className="hidden sm:inline">New Learn Guide</span>
                   </button>
                   <button
                     onClick={handleLogout}
-                    className="w-12 h-12 flex items-center justify-center rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-600 hover:text-red-500 hover:border-red-500/30 transition-all"
+                    className="w-10 h-10 sm:w-12 sm:h-12 shrink-0 flex items-center justify-center rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-600 hover:text-red-500 hover:border-red-500/30 transition-all"
                     title="Log out"
                   >
                     <i className="fa-solid fa-power-off text-lg"></i>
